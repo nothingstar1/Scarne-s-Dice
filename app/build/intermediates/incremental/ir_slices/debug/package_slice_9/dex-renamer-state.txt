@@ -1,0 +1,4 @@
+#Tue Jan 08 15:12:42 EST 2019
+base.0=/Users/demouser/Desktop/Projects/ScarnesDice/app/build/intermediates/transforms/dexMerger/debug/9
+path.0=classes.dex
+renamed.0=classes.dex
