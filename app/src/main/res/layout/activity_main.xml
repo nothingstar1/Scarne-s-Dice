@@ -31,11 +31,12 @@
         android:layout_width="wrap_content"
         android:layout_height="134dp"
         android:layout_marginStart="92dp"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="64dp"
         android:layout_marginEnd="92dp"
         android:background="@null"
         android:src="@drawable/dice1"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.516"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TurnScore" />
 
@@ -139,5 +140,19 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/TurnScore" />
+
+    <TextView
+        android:id="@+id/clickHintText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Tap dice to roll!"
+        android:textColor="@color/accent_material_dark_1"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dice" />
 
 </android.support.constraint.ConstraintLayout>

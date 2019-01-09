@@ -29,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
     private TextView cpuScoreView;
     private TextView turnScoreView;
     private TextView currentUserView;
-    private TextView message;
+    private TextView message; // the text that says what's going on ("Rolled 1!")
+    private TextView rollHint; // the text that says "tap to roll" beneath the dice
 
     private ImageButton diceButton;
     private Button holdButton;
@@ -86,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         turnScoreView = findViewById(R.id.TurnScore);
         currentUserView = findViewById(R.id.currentPlayer);
         message = findViewById(R.id.message);
+        rollHint = findViewById(R.id.clickHintText);
 
         isUserTurn = true; // default is user turn
 
@@ -159,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             roll();
+            rollHint.setVisibility(View.INVISIBLE);
         }
     };
 
