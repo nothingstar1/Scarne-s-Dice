@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView cpuScoreView;
     private TextView turnScoreView;
     private TextView currentUserView;
+    private TextView message;
 
     private ImageButton diceButton;
     private Button holdButton;
@@ -40,11 +41,14 @@ public class MainActivity extends AppCompatActivity {
     private Runnable rollDice = new Runnable() {
         @Override
         public void run() {
-            roll();
-            if(!isUserTurn && turnScore < 20)
+            if(!isUserTurn && turnScore < 20) {
+                roll();
                 handler.postDelayed(this, 1000);
+            }
             else if(turnScore >= 20) {
                 switchTurns();
+                message.setText("Computer Holds");
+                handler.post(makeMessage);
                 resetButton.setEnabled(true);
                 holdButton.setEnabled(true);
                 diceButton.setEnabled(true);
@@ -56,16 +60,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-    private Runnable spinDice = new Runnable() {
-        @Override
-        public void run() {
-            spin();
-        }
-    };
     private Runnable makeMessage = new Runnable() {
+        private boolean visible = true;
         @Override
         public void run() {
-
+            if(visible) {
+                message.setVisibility(View.VISIBLE);
+                handler.postDelayed(this, 1000);
+            }
+            else
+                message.setVisibility(View.INVISIBLE);
+            visible = !visible;
         }
     };
 
@@ -80,12 +85,12 @@ public class MainActivity extends AppCompatActivity {
         cpuScoreView = findViewById(R.id.ComputerScore);
         turnScoreView = findViewById(R.id.TurnScore);
         currentUserView = findViewById(R.id.currentPlayer);
+        message = findViewById(R.id.message);
 
         isUserTurn = true; // default is user turn
 
         diceButton = findViewById(R.id.dice);
         diceButton.setOnClickListener(rollClickListener);
-        // dice.setImageResource(R.drawable.dice2);
 
         resetButton = findViewById(R.id.resetButton);
         resetButton.setOnClickListener(resetClickListener);
@@ -96,22 +101,19 @@ public class MainActivity extends AppCompatActivity {
         updateView();
     }
 
-    private int spin() {
+    private void roll() {
         // randomly select a dice value ( get a value i between 0 and 5 inclusive )
         int i = random.nextInt(6);
         // update the display to show value ( use dice[i] )
         diceButton.setImageResource(dice[i]);
-        return i;
-    }
-
-    private void roll() {
-//        int numSpins = 20;
-//        for(int i = 0; i < numSpins; i++)
-//            handler.postDelayed(spinDice, 100);
-        int i = spin();
         if(i != 0 ) {
             turnScore += i+1;
         } else {
+            if(isUserTurn)
+                message.setText("You Rolled 1!");
+            else
+                message.setText("CPU Rolled 1!");
+            handler.post(makeMessage);
             turnScore = 0;
             switchTurns();
         }
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
         diceButton.setEnabled(false);
         resetButton.setEnabled(false);
         holdButton.setEnabled(false);
-        handler.postDelayed(rollDice, 10);
+        handler.postDelayed(rollDice, 1000);
     }
 
     private void updateView() {
