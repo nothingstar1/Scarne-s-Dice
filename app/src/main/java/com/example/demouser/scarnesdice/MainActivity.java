@@ -8,6 +8,8 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -31,12 +33,14 @@ public class MainActivity extends AppCompatActivity {
     private TextView currentUserView;
     private TextView message; // the text that says what's going on ("Rolled 1!")
     private TextView rollHint; // the text that says "tap to roll" beneath the dice
+    private TextView winText;
 
     private ImageButton diceButton;
     private Button holdButton;
     private Button resetButton;
 
     private Random random;
+    private Animation aniDice;
 
     private Handler handler = new Handler();
     private Runnable rollDice = new Runnable() {
@@ -44,15 +48,15 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
             if(!isUserTurn && turnScore < 20) {
                 roll();
-                handler.postDelayed(this, 1000);
+                handler.postDelayed(this, 500);
             }
             else if(turnScore >= 20) {
-                switchTurns();
                 message.setText("Computer Holds");
                 handler.post(makeMessage);
                 resetButton.setEnabled(true);
                 holdButton.setEnabled(true);
                 diceButton.setEnabled(true);
+                switchTurns();
             }
             else {
                 resetButton.setEnabled(true);
@@ -88,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
         currentUserView = findViewById(R.id.currentPlayer);
         message = findViewById(R.id.message);
         rollHint = findViewById(R.id.clickHintText);
+        winText = findViewById(R.id.WinText);
+        winText.setVisibility(View.INVISIBLE);
 
         isUserTurn = true; // default is user turn
 
@@ -100,7 +106,24 @@ public class MainActivity extends AppCompatActivity {
         holdButton = findViewById(R.id.holdButton);
         holdButton.setOnClickListener(holdClickListener);
 
+        aniDice = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.zoom);
+
         updateView();
+    }
+
+    private boolean gameOver() {
+        if(userScore >= 100) {
+            winText.setText("YOU WIN");
+        }
+        else if(cpuScore >= 100) {
+            winText.setText("CPU WINS");
+        }
+        else
+            return false;
+        winText.setVisibility(View.VISIBLE);
+        diceButton.setEnabled(false);
+        holdButton.setEnabled(false);
+        return true;
     }
 
     private void roll() {
@@ -119,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
             turnScore = 0;
             switchTurns();
         }
+        diceButton.startAnimation(aniDice);
         updateView();
     }
 
@@ -133,10 +157,12 @@ public class MainActivity extends AppCompatActivity {
             isUserTurn = true;
         }
         turnScore = 0;
+        updateView();
+        if(gameOver())
+            return;
         if(!isUserTurn) {
             takeComputerTurn();
         }
-        updateView();
     }
 
     private void takeComputerTurn() {
@@ -180,6 +206,12 @@ public class MainActivity extends AppCompatActivity {
             turnScore = 0;
             isUserTurn = true;
             updateView();
+            rollHint.setVisibility(View.VISIBLE);
+
+            holdButton.setEnabled(true);
+            resetButton.setEnabled(true);
+            diceButton.setEnabled(true);
+            winText.setVisibility(View.INVISIBLE);
         }
     };
 }
